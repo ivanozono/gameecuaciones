@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 
-// Función para generar ecuaciones de primer grado con solución entera
+// Generar ecuaciones con solución entera
 function generarEcuacion() {
   let a, b, c, solucion;
   do {
@@ -24,7 +24,7 @@ export default function DefensoresDelAlgebra() {
   const [oleada, setOleada] = useState(1);
   const [finDelJuego, setFinDelJuego] = useState(false);
   const [retroalimentacion, setRetroalimentacion] = useState('');
-  const [mostrarModal, setMostrarModal] = useState(false);
+  const [mostrarMensaje, setMostrarMensaje] = useState(false);
 
   const intervaloMovimientoRef = useRef(null);
 
@@ -59,8 +59,8 @@ export default function DefensoresDelAlgebra() {
           return true;
         } else {
           perderVida();
-          mostrarModalConMensaje(
-            `¡Oh no! El enemigo llegó al fondo. La respuesta correcta era: ${enemigo.solucion} ❌`
+          mostrarMensajeDeRetroalimentacion(
+            `❌ ¡Oh no! El enemigo llegó al fondo. La respuesta correcta era: ${enemigo.solucion}`
           );
           return false;
         }
@@ -83,25 +83,25 @@ export default function DefensoresDelAlgebra() {
 
     if (numero === ecuacionActiva.solucion) {
       setPuntuacion((prev) => prev + 10);
-      mostrarModalConMensaje(`¡Correcto! La respuesta es ${ecuacionActiva.solucion} ✅`);
+      mostrarMensajeDeRetroalimentacion(`✅ ¡Correcto! La respuesta es ${ecuacionActiva.solucion}`);
     } else {
       perderVida();
-      mostrarModalConMensaje(`¡Incorrecto! La respuesta correcta era: ${ecuacionActiva.solucion} ❌`);
+      mostrarMensajeDeRetroalimentacion(`❌ ¡Incorrecto! La respuesta correcta era: ${ecuacionActiva.solucion}`);
     }
 
-    setEnemigos([]);
     setRespuestaUsuario('');
   }
 
-  function mostrarModalConMensaje(msj) {
+  function mostrarMensajeDeRetroalimentacion(msj) {
     setRetroalimentacion(msj);
-    setMostrarModal(true);
-  }
+    setMostrarMensaje(true);
 
-  function cerrarModal() {
-    setMostrarModal(false);
-    setRetroalimentacion('');
-    if (!finDelJuego && vidas > 0) setOleada((prev) => prev + 1);
+    setTimeout(() => {
+      setMostrarMensaje(false);
+      if (!finDelJuego && vidas > 0) {
+        setOleada((prev) => prev + 1); // Genera nueva ecuación después del mensaje
+      }
+    }, 3000); // Ocultar después de 3 segundos
   }
 
   if (finDelJuego) {
@@ -138,38 +138,12 @@ export default function DefensoresDelAlgebra() {
       </div>
 
       {/* Contenedor del enemigo - "Campo de batalla" */}
-      <div
-        className="
-          relative 
-          w-full 
-          sm:w-3/4 
-          md:w-2/3 
-          h-[70vh] 
-          md:h-[500px] 
-          bg-gray-900
-          bg-opacity-80 
-          overflow-hidden 
-          rounded-xl 
-          border-10
-          border-lime-400 
-          shadow-[0_0_20px_rgba(0,255,0,0.6)]
-          flex flex-col justify-between p-6
-        "
-      >
+      <div className="relative w-full sm:w-3/4 md:w-2/3 h-[70vh] md:h-[500px] bg-gray-900 bg-opacity-80 overflow-hidden rounded-xl border-10 border-lime-400 shadow-[0_0_20px_rgba(0,255,0,0.6)] flex flex-col justify-between p-6">
         {/* Naves invasoras */}
         {enemigos.map((enemigo) => (
           <motion.div
             key={enemigo.id}
-            className="
-              absolute 
-              bg-red-600 
-              text-white 
-              text-2xl md:text-3xl 
-              px-5 py-3 
-              rounded-lg 
-              font-bold 
-              shadow-lg shadow-red-500
-            "
+            className="absolute bg-red-600 text-white text-2xl md:text-3xl px-5 py-3 rounded-lg font-bold shadow-lg shadow-red-500"
             initial={{ y: -50 }}
             animate={{ y: enemigo.posicion }}
             transition={{ duration: 0.5, ease: 'easeInOut' }}
@@ -179,16 +153,25 @@ export default function DefensoresDelAlgebra() {
           </motion.div>
         ))}
 
-        {/* Área de respuestas dentro del rectángulo */}
+        {/* Área de respuestas */}
         <div className="absolute bottom-6 w-full flex justify-center">
           <input 
             type="number" 
             className="p-3 rounded-lg text-black border-4 border-lime-300" 
             placeholder="Tu respuesta..."
+            value={respuestaUsuario}
+            onChange={(e) => setRespuestaUsuario(e.target.value)}
           />
-          <button className="bg-lime-500 px-4 py-2 rounded-lg ml-2">Enviar</button>
+          <button className="bg-lime-500 px-4 py-2 rounded-lg ml-2" onClick={manejarRespuesta}>Enviar</button>
         </div>
       </div>
+
+      {/* Sección de retroalimentación (en lugar del modal) */}
+      {mostrarMensaje && (
+        <div className="mt-4 bg-gray-800 text-white px-6 py-3 rounded-lg shadow-lg text-center text-xl">
+          {retroalimentacion}
+        </div>
+      )}
     </div>
   );
 }
