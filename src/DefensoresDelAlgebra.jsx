@@ -99,9 +99,9 @@ export default function DefensoresDelAlgebra() {
     setTimeout(() => {
       setMostrarMensaje(false);
       if (!finDelJuego && vidas > 0) {
-        setOleada((prev) => prev + 1); // Genera nueva ecuación después del mensaje
+        setOleada((prev) => prev + 1);
       }
-    }, 3000); // Ocultar después de 3 segundos
+    }, 3000);
   }
 
   if (finDelJuego) {
@@ -110,7 +110,7 @@ export default function DefensoresDelAlgebra() {
         <h1 className="text-5xl neon-title mb-6">DEFENSORES DEL ÁLGEBRA</h1>
         <p className="text-xl mb-4">Puntuación final: {puntuacion}</p>
         <button
-          className="neon-button bg-lime-600 px-6 py-3 rounded-full"
+          className="neon-button bg-lime-600 px-8 py-4 rounded-lg shadow-lg text-2xl font-bold transition transform hover:scale-105"
           onClick={() => {
             setPuntuacion(0);
             setVidas(3);
@@ -127,23 +127,23 @@ export default function DefensoresDelAlgebra() {
   }
 
   return (
-    <div className="min-h-screen bg-black text-lime-200 flex flex-col items-center p-6">
-      <h1 className="text-4xl neon-title mb-6">DEFENSORES DEL ÁLGEBRA</h1>
+    <div className="min-h-screen bg-black text-lime-200 flex flex-col items-center p-8 space-y-6">
+      <h1 className="text-5xl neon-title mb-8">DEFENSORES DEL ÁLGEBRA</h1>
 
       {/* Barra de estado */}
-      <div className="flex gap-6 mb-6">
+      <div className="flex gap-8 text-2xl font-bold mb-8">
         <p>🪙 Puntos: {puntuacion}</p>
         <p>❤️ Vidas: {vidas}</p>
-        <p>🌊 Oleada: {oleada}</p>
+        <p>🌊 Nivel: {oleada}</p>
       </div>
 
       {/* Contenedor del enemigo - "Campo de batalla" */}
-      <div className="relative w-full sm:w-3/4 md:w-2/3 h-[70vh] md:h-[500px] bg-gray-900 bg-opacity-80 overflow-hidden rounded-xl border-10 border-lime-400 shadow-[0_0_20px_rgba(0,255,0,0.6)] flex flex-col justify-between p-6">
+      <div className="relative w-full sm:w-3/4 md:w-2/3 h-[70vh] md:h-[500px] bg-gray-900 bg-opacity-80 overflow-hidden rounded-xl border-8 border-lime-500 shadow-lg flex flex-col justify-between p-8">
         {/* Naves invasoras */}
         {enemigos.map((enemigo) => (
           <motion.div
             key={enemigo.id}
-            className="absolute bg-red-600 text-white text-2xl md:text-3xl px-5 py-3 rounded-lg font-bold shadow-lg shadow-red-500"
+            className="absolute bg-red-600 text-white text-3xl md:text-4xl px-6 py-4 rounded-lg font-bold shadow-lg shadow-red-500"
             initial={{ y: -50 }}
             animate={{ y: enemigo.posicion }}
             transition={{ duration: 0.5, ease: 'easeInOut' }}
@@ -154,21 +154,23 @@ export default function DefensoresDelAlgebra() {
         ))}
 
         {/* Área de respuestas */}
-        <div className="absolute bottom-6 w-full flex justify-center">
+        <div className="absolute bottom-8 w-full flex justify-center space-x-4">
           <input 
             type="number" 
-            className="p-3 rounded-lg text-black border-4 border-lime-300" 
+            className="p-4 text-2xl font-bold rounded-lg text-black border-4 border-lime-400 shadow-lg focus:ring-4 focus:ring-lime-300"
             placeholder="Tu respuesta..."
             value={respuestaUsuario}
             onChange={(e) => setRespuestaUsuario(e.target.value)}
           />
-          <button className="bg-lime-500 px-4 py-2 rounded-lg ml-2" onClick={manejarRespuesta}>Enviar</button>
+          <button className="bg-yellow-500 text-black font-bold text-2xl px-6 py-3 rounded-lg shadow-lg hover:bg-yellow-400 transition transform hover:scale-105" onClick={manejarRespuesta}>
+            Enviar 🚀
+          </button>
         </div>
       </div>
 
-      {/* Sección de retroalimentación (en lugar del modal) */}
+      {/* Sección de retroalimentación */}
       {mostrarMensaje && (
-        <div className="mt-4 bg-gray-800 text-white px-6 py-3 rounded-lg shadow-lg text-center text-xl">
+        <div className="mt-6 bg-gray-800 text-white px-8 py-4 rounded-lg shadow-lg text-center text-2xl font-bold">
           {retroalimentacion}
         </div>
       )}
